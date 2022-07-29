@@ -40,13 +40,25 @@ function addCityButton(cityName){
     }
 }
 
+//if you click on a city in history, load that up in search
+$('.history').click(function(event) {
+    //event bubble, make sure you clicked a button
+    target = $(event.target)
+    if (target.hasClass('btn')){
+        let city = target.text();
+        getWeather(city);
+    }
+})
+
 function getWeather(city) {
+    //initializing variables for simplpicity
     var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIkey + '&units=imperial';
     let cityname;
     let wind;
     let humidity;
     let temp;
     let icon;
+    //fetch request
     fetch(queryURL)
     .then(function (response) {
         return response.json();
@@ -67,15 +79,61 @@ function getWeather(city) {
             <p class="temp">Temp: <span class="temp">${temp}</span>°F</p>
             <p>Wind Speed: <span class="wind">${wind}</span>MPH</p>
             <p>Humidity: <span class="humidity">${humidity}</span>%</p>
-            <p class="uv">UV Index: <span class="uv-indicator"></span></p>`
+            <p class="uv">UV Index: <span class="uv-indicator"></span></p>`;
+        //set weather container's html to weatherHTML
         weatherContainer.html(weatherHTML);
     });
-
-
 }
 
+function getForecast(city,dateobj) {
+    //initialize variables for simplicity / lack of repetition
+    let wind;
+    let humidity;
+    let temp;
+    let icon;
+    //call server for 5 days of weather data
+    let forecastqueryURL = 'http://api.openweathermap.org/data/2.5/forecast?q=' + city + "&appid=" + APIkey + '&units=imperial';
+    fetch(forecastqueryURL)
+    .then(function (response) {
+        return response.json();
+    })
+    .then(function (data) {
+        //now we have the forecast data
+        let timeblockIndex = 0;
+        let timeblockData;
+        let dateobj = moment();
+    //loop through the next 5 days
+        for (let index = 1; index <= 5; index++) {
+            let date = dateobj.add(1, 'days')
+            //midday on date in unix epoch
+            let middayUnix = date.startOf('day').add(11,'hours').unix();
+            console.log('index is ' + index + ' timeblock index is ' + timeblockIndex + ' middayunix is ' + moment.unix(middayUnix).format("MMMM Do YYYY, h:mm:ss a"));
+            //find the noon-ish timeblock by comparing the forecast time (in unix epoch) with middayUnix
+            while (data.list[timeblockIndex].dt<middayUnix ) {
+                console.log('while timeblock is ' + timeblockIndex + ' unix is ' + moment.unix(data.list[timeblockIndex].dt).format("dddd, MMMM Do YYYY, h:mm:ss a"));
+                timeblockIndex++;
+            }
+            timeblockData = data.list[timeblockIndex];
+            temp = timeblockData.main.temp;
+            humidity = timeblockData.main.humidity;
+            wind = timeblockData.wind.speed;
+            icon = 'http://openweathermap.org/img/wn/' + timeblockData.weather[0].icon + '@2x.png';
+            let forecastHTML = `
+            <div class="day1 col bg-dark text-white">
+                <h5>${date.format('L')}</h5>
+                <img class="icon" src="${icon}">
+                <p class="temp">Temp: <span class="temp">${temp}</span>°F</p>
+                <p>Wind Speed: <span class="wind">${wind}</span>MPH</p>
+                <p>Humidity: <span class="humidity">${humidity}</span>%</p>
+            </div>`;
+            let forecastContainer = $('.forecast');
+            forecastContainer.html(forecastHTML);
+        }
+    })
+}
 
-getWeather('philadelphia')
+getWeather('philadelphia');
+//getForecast('philadelphia');
 
 
 
