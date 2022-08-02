@@ -143,6 +143,7 @@ function getWeather(city) {
         var weatherContainer = $('.current-weather');
         let weatherHTML = '<h2 class="weather-head"> Something went wrong. Did you type a valid city name?</h2>';
         weatherContainer.html(weatherHTML);
+        $('.forecast').empty();
     })
 }
 
