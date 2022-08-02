@@ -1,7 +1,7 @@
 # weatherGrabberER
 
 ## Description
-Webpage that loads the weather for given input cities. a large block comes up with the current weather, and smaller blocks detail the 5-day forecast. This was very good practice for working with APIs and APIkeys.
+Webpage that loads the weather for given input cities. a large block comes up with the current weather, and smaller blocks detail the 5-day forecast. This was very good practice for working with APIs and APIkeys. The weather is displayed in Kelvin (I'm an astronomer! I think it's fun!)
 
 ## Installation
 Access the project at https://emilyerose.github.io/weatherGrabberER/

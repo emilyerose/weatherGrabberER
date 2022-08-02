@@ -101,7 +101,7 @@ function getWeather(city) {
             var weatherContainer = $('.current-weather');
             let weatherHTML = `
                 <h2 class="weather-head">${cityname}<img class="icon" src=${icon}></h2>
-                <p class="temp">Temp: <span class="temp">${temp}</span>°F</p>
+                <p class="temp">Temp: <span class="temp">${temp}</span>°K</p>
                 <p>Wind Speed: <span class="wind">${wind}</span>MPH</p>
                 <p>Humidity: <span class="humidity">${humidity}</span>%</p>
                 <p class="uv">UV Index: <span class="uv-indicator ${qual}"> ${uv} </span></p>`;
@@ -130,7 +130,7 @@ function getWeather(city) {
                 <div class="col bg-dark text-white m-2">
                     <h5>${date.format('L')}</h5>
                     <img class="icon" src="${icon}">
-                    <p class="temp">Temp: <span class="temp">${temp}</span>°F</p>
+                    <p class="temp">Temp: <span class="temp">${temp}</span>°K</p>
                     <p>Wind Speed: <span class="wind">${wind}</span>MPH</p>
                     <p>Humidity: <span class="humidity">${humidity}</span>%</p>
                 </div>`;
@@ -184,7 +184,7 @@ function getForecast(city) {
             <div class="day1 col bg-dark text-white">
                 <h5>${date.format('L')}</h5>
                 <img class="icon" src="${icon}">
-                <p class="temp">Temp: <span class="temp">${temp}</span>°F</p>
+                <p class="temp">Temp: <span class="temp">${temp}</span>°K</p>
                 <p>Wind Speed: <span class="wind">${wind}</span>MPH</p>
                 <p>Humidity: <span class="humidity">${humidity}</span>%</p>
             </div>`;
