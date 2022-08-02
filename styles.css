@@ -1,8 +1,49 @@
+:root{
+    --theme-dark: navy;
+    --primary: steelblue;
+    --dark-primary: rgb(44, 99, 144);
+
+}
+
 .current-weather {
     border: 2px solid black;
+    color: darkc
 }
 
 .btn {
     margin-bottom: 1rem;
     width: 100%;
+}
+
+header {
+    background: linear-gradient(var(--theme-dark),var(--primary));  
+}
+
+.search-btn {
+    background-color: var(--primary);
+    border-color: var(--dark-primary);
+}
+.search-btn:hover {
+    background-color: var(--dark-primary);
+}
+
+.forecast-day {
+    background: linear-gradient(var(--dark-primary),var(--primary));
+}
+
+.uv-indicator {
+    border-radius: 4px;
+}
+.low {
+    background-color:limegreen;
+    
+}
+
+.uv-indicator.mid {
+    background-color: yellow
+}
+
+.uv-indicator.high {
+    background-color: red;
+    color: white;
 }

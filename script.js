@@ -52,47 +52,108 @@ $('.history').click(function(event) {
 
 function getWeather(city) {
     //initializing variables for simplpicity
-    var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIkey + '&units=imperial';
     let cityname;
     let wind;
     let humidity;
     let temp;
+    let uv;
     let icon;
-    //fetch request
-    fetch(queryURL)
+    let lat;
+    let long;
+    let coordsquery = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&appid=" + APIkey;
+    let today = moment();
+    //get city lat and long coords
+    fetch(coordsquery)
     .then(function (response) {
         return response.json();
     })
     .then(function (data) {
-        //use moment.js to get current time/day
-        let today = moment();
-        //get variables from data
-        cityname = data.name + ' (' + today.format('L') + ')';
-        temp = data.main.temp;
-        humidity = data.main.humidity;
-        wind = data.wind.speed;
-        icon = 'http://openweathermap.org/img/wn/' + data.weather[0].icon + '@2x.png';
-        //render current weather HTML
+        lat = data[0].lat.toFixed(2);
+        long = data[0].lon.toFixed(2);
+        let query = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + long + "&exclude=hourly,minutely,alerts&appid=" + APIkey;
+        cityname = data[0].name + ' (' + today.format('L') + ')';
+
+        //get weather data
+        fetch(query)
+        .then(function (response) {
+            return response.json();
+        })
+        //current weather
+        .then(function (data) {
+            //get variables from data
+            temp = data.current.temp;
+            humidity = data.current.humidity;
+            wind = data.current.wind_speed;
+            uv = parseFloat(data.current.uvi);
+            icon = 'http://openweathermap.org/img/wn/' + data.current.weather[0].icon + '@2x.png';
+            let qual;
+            //define uv quality
+            if (uv<=2) {
+                qual = 'low';
+            }
+            else if (uv<=6) {
+                qual = 'mid';
+            }
+            else {
+                qual = 'high'
+            };
+            //render current weather HTML
+            var weatherContainer = $('.current-weather');
+            let weatherHTML = `
+                <h2 class="weather-head">${cityname}<img class="icon" src=${icon}></h2>
+                <p class="temp">Temp: <span class="temp">${temp}</span>°F</p>
+                <p>Wind Speed: <span class="wind">${wind}</span>MPH</p>
+                <p>Humidity: <span class="humidity">${humidity}</span>%</p>
+                <p class="uv">UV Index: <span class="uv-indicator ${qual}"> ${uv} </span></p>`;
+            //set weather container's html to weatherHTML
+            weatherContainer.html(weatherHTML);
+
+            return data.daily
+        })
+        .then(function (data) {
+            //if there is already weather here, delete it and reload it
+            let forecastContainer = $('.forecast');
+            if (forecastContainer.children().length){
+                console.log('hello');
+                forecastContainer.empty();
+            }
+
+            for (let index = 1; index <= 5; index++) {
+                //get the correct day's weather data, starting tomorrow
+                let info = data[index];
+                let date = moment.unix(info.dt);
+                temp = info.temp.max;
+                humidity = info.humidity;
+                wind = info.wind_speed;
+                icon = 'http://openweathermap.org/img/wn/' + info.weather[0].icon + '@2x.png';
+                let forecastHTML = `
+                <div class="col bg-dark text-white m-2">
+                    <h5>${date.format('L')}</h5>
+                    <img class="icon" src="${icon}">
+                    <p class="temp">Temp: <span class="temp">${temp}</span>°F</p>
+                    <p>Wind Speed: <span class="wind">${wind}</span>MPH</p>
+                    <p>Humidity: <span class="humidity">${humidity}</span>%</p>
+                </div>`;
+                
+                forecastContainer.append(forecastHTML);
+            }
+        })
+    })
+    .catch(function (error) {
         var weatherContainer = $('.current-weather');
-        var weatherHTML = `
-            <h2 class="weather-head">${cityname}<img class="icon" src=${icon}></h2>
-            <p class="temp">Temp: <span class="temp">${temp}</span>°F</p>
-            <p>Wind Speed: <span class="wind">${wind}</span>MPH</p>
-            <p>Humidity: <span class="humidity">${humidity}</span>%</p>
-            <p class="uv">UV Index: <span class="uv-indicator"></span></p>`;
-        //set weather container's html to weatherHTML
+        let weatherHTML = '<h2 class="weather-head"> Something went wrong. Did you type a valid city name?</h2>';
         weatherContainer.html(weatherHTML);
-    });
+    })
 }
 
-function getForecast(city,dateobj) {
+function getForecast(city) {
     //initialize variables for simplicity / lack of repetition
     let wind;
     let humidity;
     let temp;
     let icon;
     //call server for 5 days of weather data
-    let forecastqueryURL = 'http://api.openweathermap.org/data/2.5/forecast?q=' + city + "&appid=" + APIkey + '&units=imperial';
+    let forecastqueryURL = 'https://api.openweathermap.org/data/2.5/onecall?q=' + city + "&exclude=hourly,minutely,alerts" + "&appid=" + APIkey + '&units=imperial';
     fetch(forecastqueryURL)
     .then(function (response) {
         return response.json();

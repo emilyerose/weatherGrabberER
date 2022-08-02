@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="container-fluid bg-dark">
+    <header class="container-fluid bg-dark p-3 mb-2">
         <h1 class="text-white text-center">
             Weather Dashboard
         </h1>
@@ -31,7 +31,7 @@
             </div>
         <!-- display weather -->
             <div class="weather-display col-9">
-                <div class="current-weather">
+                <div class="current-weather ps-3 pe-3">
                     <!--current weather dynamically loads here-->
                     <h2 class="weather-head">Cityname date<span class="icon"></span></h2>
                     <p class="temp">Temp: <span class="temp"></span>°F</p>
@@ -42,15 +42,7 @@
                 <div class="container">
                     <!--forecast loads here-->
                     <h4 class="forecast-head w-100">5 Day Forecast:</h4>
-                    <div class="forecast row">
-                        <div class="day1 col bg-dark text-white">
-                            <h5>date</h5>
-                            <img class="icon" src="">
-                            <p class="temp">Temp: <span class="temp"></span>°F</p>
-                            <p>Wind Speed: <span class="wind"></span>MPH</p>
-                            <p>Humidity: <span class="humidity"></span>%</p>
-                        </div>
-                    </div>
+                    <div class="forecast row"></div>
                 </div>
             </div>
         </div>
