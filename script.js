@@ -60,7 +60,7 @@ function getWeather(city) {
     let icon;
     let lat;
     let long;
-    let coordsquery = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&appid=" + APIkey;
+    let coordsquery = "https://api.openweathermap.org/geo/1.0/direct?q=" + city + "&appid=" + APIkey;
     let today = moment();
     //get city lat and long coords
     fetch(coordsquery)
